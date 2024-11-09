@@ -27,8 +27,8 @@ function App() {
     })
   }
   function updateuser(id) {
-    const user = users.find((user)=>user.id === id)
-     fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
+    const user = users.find((user) => user.id === id);
+    fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
       method: "PUT",
       body: JSON.stringify(user),
       headers: {
@@ -38,7 +38,23 @@ function App() {
       .then((response) => {
         return response.json();
       })
+      .then((json) => {});
+  }
+
+  function deleteuser(id) {
+    const user = users.find((user)=>user.id === id)
+     fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
+      method: "DELETE",
+     
+    })
+      .then((response) => {
+        return response.json();
+      })
       .then((json) => {
+        setusers((user)=>{
+         return user.filter((user)=>(user.id!==id))
+          
+        })
       });
     
   }
@@ -99,7 +115,7 @@ function App() {
                 }} value={user.website} />}</td>
                 <td>
                   <Button intent="primary" onClick={()=>{ return updateuser(user.id)}}>Update</Button>
-                  <Button intent="danger" onClick={()=>{return `deleteuser(user.id)`}}>Delete</Button>
+                  <Button intent="danger" onClick={()=>{return deleteuser(user.id)}}>Delete</Button>
                 </td>
               </tr>
             );
