@@ -18,6 +18,30 @@ function App() {
       })
       .catch((error) => console.error("Error fetching users:", error)); // Optional error handling
   }, []); // The empty array denotes that it should call only once
+  
+  function onchangehandler(id,key,value) {
+    setusers((prevVal)=>{
+      return users.map((user)=>{
+       return user.id === id ? {...user , [key]:value} : user;
+      })
+    })
+  }
+  function updateuser(id) {
+    const user = users.find((user)=>user.id === id)
+     fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+      });
+    
+  }
 
   function funccall(params) {
     const name1 = newname.trim();
@@ -59,12 +83,23 @@ function App() {
             return (
               <tr key={user.id}>
                 <td>{user.id}</td>
-                <td>{<EditableText value={user.name} />}</td>
-                <td>{<EditableText value={user.email} />}</td>
-                <td>{<EditableText value={user.website} />}</td>
+                <td>{user.name}</td>
                 <td>
-                  <Button intent="primary">Delete</Button>
-                  <Button intent="danger">Update</Button>
+                  {
+                    <EditableText
+                      onChange={(value1) => {
+                        return onchangehandler(user.id, "email", value1);
+                      }}
+                      value={user.email}
+                    />
+                  }
+                </td>
+                <td>{<EditableText onChange={(value1)=>{
+                        return onchangehandler(user.id, "website", value1);
+                }} value={user.website} />}</td>
+                <td>
+                  <Button intent="primary" onClick={()=>{ return updateuser(user.id)}}>Update</Button>
+                  <Button intent="danger" onClick={()=>{return `deleteuser(user.id)`}}>Delete</Button>
                 </td>
               </tr>
             );
@@ -76,7 +111,7 @@ function App() {
             <td>
               <InputGroup
                 onChange={(e) => {
-                  setnewname(e.target.value);
+                  return setnewname(e.target.value);
                 }}
               />
             </td>
@@ -84,7 +119,6 @@ function App() {
               <InputGroup
                 onChange={(e) => {
                   setnewemail(e.target.value);
-                  console.log("dsff", newname);
                 }}
               />
             </td>
